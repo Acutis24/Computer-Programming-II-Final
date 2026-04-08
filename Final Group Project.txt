@@ -1,0 +1,15 @@
+Group Members:
+Henry
+Emmanual
+Jeron
+
+Topic:
+Snake
+
+Features:
+Multiplayer
+Singleplayer
+Different snake skins 
+Buttons: Play and Pause
+Differing Speed: Slow then progress faster as you go through; automatically start at different speeds
+Bombs
