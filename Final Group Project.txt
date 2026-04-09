@@ -11,5 +11,5 @@ Multiplayer
 Singleplayer
 Different snake skins 
 Buttons: Play and Pause
-Differing Speed: Slow then progress faster as you go through; can choose to start at different speeds
+Differing Speed: Starts slow then progresses faster as you go through; can choose a different starting speed
 Bombs
