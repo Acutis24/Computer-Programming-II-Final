@@ -28,5 +28,25 @@ public class Window {
             }
         });
         frame.add(playButton); //adds the button to the window
+
+        JButton skinButton = new JButton("Skins"); //creates the skin button
+        skinButton.setBounds(775, 635, 150, 40); //sets the position and size of the button
+        skinButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Skins Menu"); //placeholder
+            }
+        });
+        frame.add(skinButton); //adds the button to the window
+
+        JButton quitButton = new JButton("Quit"); //creates the quit button
+        quitButton.setBounds(775, 705, 150, 40); //sets the position and size of the button
+        quitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0); //closes the program
+            }
+        });
+        frame.add(quitButton); //adds the button to the window
     }
 }
