@@ -11,8 +11,11 @@ public class SnakePyTranslation {
 
     static JFrame frame;
     static JPanel panel;
+    static JButton skinsButton;
+    static JButton backButton;
     static ArrayList<Rectangle> snakeBody = new ArrayList<>();
     static Rectangle snakeHead;
+    static Color snakeColor;
     static Rectangle fruit;
     static int snakeMoveX = 0;
     static int snakeMoveY = 0;
@@ -50,6 +53,17 @@ public class SnakePyTranslation {
                 g.drawString("Use W A S D to Move", 130, 250);
             }
         };
+        
+        skinsButton = new JButton("Skins");
+        panel.add(skinsButton);
+        skinsButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                frame.remove(panel);
+                skinsMenu();
+            }
+        });
 
         panel.setFocusable(true);
         panel.addKeyListener(new KeyAdapter() {
@@ -59,6 +73,48 @@ public class SnakePyTranslation {
                     frame.remove(panel);
                     startGame();
                 }
+            }
+        });
+
+        frame.remove(frame);
+        frame.add(panel);
+        frame.revalidate();
+        panel.requestFocusInWindow();
+    }
+
+    static void skinsMenu(){
+        panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Background
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, WIDTH, HEIGHT);
+                // Title
+                g.setColor(Color.RED);
+                g.setFont(new Font("Arial", Font.BOLD, 28));
+                g.drawString("SKINS MENU", 110, 160);
+            }
+        };
+
+        backButton = new JButton("Back");
+        panel.add(backButton);
+        backButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                frame.remove(panel);
+                startMenu();
+            }
+        });
+
+        JButton blueButton = new JButton("Blue");
+        panel.add(blueButton);
+        backButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                snakeColor = Color.BLUE;
             }
         });
 
@@ -142,12 +198,12 @@ public class SnakePyTranslation {
                     }
                 }
                 // Snake body
-                g.setColor(Color.GREEN);
+                g.setColor(snakeColor);
                 for (Rectangle r : bodyRects) {
                     g.fillRect(r.x, r.y, SQUARE_SIZE, SQUARE_SIZE);
                 }
                 // Snake head
-                g.setColor(Color.GREEN);
+                g.setColor(snakeColor);
                 g.fillRect(headPos[0], headPos[1], SQUARE_SIZE, SQUARE_SIZE);
                 // Fruit
                 g.setColor(Color.RED);
