@@ -15,7 +15,7 @@ public class SnakePyTranslation {
     static JButton backButton;
     static ArrayList<Rectangle> snakeBody = new ArrayList<>();
     static Rectangle snakeHead;
-    static Color snakeColor;
+    static Color snakeColor = Color.GREEN;
     static Rectangle fruit;
     static int snakeMoveX = 0;
     static int snakeMoveY = 0;
@@ -110,11 +110,51 @@ public class SnakePyTranslation {
 
         JButton blueButton = new JButton("Blue");
         panel.add(blueButton);
-        backButton.addActionListener(new ActionListener()
+        blueButton.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
                 snakeColor = Color.BLUE;
+            }
+        });
+
+        JButton redButton = new JButton("Red");
+        panel.add(redButton);
+        redButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                snakeColor = Color.RED;
+            }
+        });
+
+        JButton greenButton = new JButton("Green");
+        panel.add(greenButton);
+        greenButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                snakeColor = Color.GREEN;
+            }
+        });
+
+        JButton orangeButton = new JButton("Orange");
+        panel.add(orangeButton);
+        orangeButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                snakeColor = Color.ORANGE;
+            }
+        });
+
+        JButton yellowButton = new JButton("Yellow");
+        panel.add(yellowButton);
+        yellowButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                snakeColor = Color.YELLOW;
             }
         });
 
