@@ -33,7 +33,7 @@ public class SnakePyTranslation {
     }
 
     static void startMenu() {
-        panel = new JPanel() {
+        panel = new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -43,42 +43,41 @@ public class SnakePyTranslation {
                 // Title
                 g.setColor(Color.GREEN);
                 g.setFont(new Font("Arial", Font.BOLD, 28));
-                g.drawString("SNAKE GAME", 110, 160);
-                // Instructions
+                g.drawString("SNAKE GAME", 110, 100);
+                // Prompt
                 g.setColor(Color.WHITE);
-                g.setFont(new Font("Arial", Font.PLAIN, 16));
-                g.drawString("Press SPACE or ENTER to Start", 85, 210);
-                // Controls
                 g.setFont(new Font("Arial", Font.PLAIN, 14));
-                g.drawString("Use W A S D to Move", 130, 250);
+                g.drawString("Select a button to continue", 90, 140);
             }
         };
-        
-        skinsButton = new JButton("Skins");
-        panel.add(skinsButton);
-        skinsButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+
+        panel.setBackground(Color.BLACK);
+        panel.setFocusable(true);
+
+        JButton playButton = new JButton("Play");
+        playButton.setBounds(125, 180, 150, 40);
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 frame.remove(panel);
-                skinsMenu();
+                startGame();
             }
         });
 
-        panel.setFocusable(true);
-        panel.addKeyListener(new KeyAdapter() {
+        JButton skinButton = new JButton("Skins");
+        skinButton.setBounds(125, 235, 150, 40);
+        skinButton.addActionListener(new ActionListener() {
             @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    frame.remove(panel);
-                    startGame();
-                }
+            public void actionPerformed(ActionEvent e) {
+                frame.remove(panel);
+                showSkinsMenu();
             }
         });
 
         frame.remove(frame);
         frame.add(panel);
         frame.revalidate();
+        frame.repaint();
         panel.requestFocusInWindow();
     }
 
@@ -158,15 +157,69 @@ public class SnakePyTranslation {
             }
         });
 
+        JButton quitButton = new JButton("Quit");
+        quitButton.setBounds(125, 290, 150, 40);
+        quitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        panel.add(playButton);
+        panel.add(skinButton);
+        panel.add(quitButton);
+
+        frame.getContentPane().removeAll();
         frame.add(panel);
         frame.revalidate();
+        frame.repaint();
+        panel.requestFocusInWindow();
+    }
+
+    static void showSkinsMenu() {
+        panel = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, WIDTH, HEIGHT);
+                g.setColor(Color.GREEN);
+                g.setFont(new Font("Arial", Font.BOLD, 24));
+                g.drawString("SKINS MENU", 110, 100);
+                g.setColor(Color.WHITE);
+                g.setFont(new Font("Arial", Font.PLAIN, 14));
+                g.drawString("Skin selection is a placeholder.", 95, 150);
+                g.drawString("Press Back to return to main menu.", 75, 180);
+            }
+        };
+
+        panel.setBackground(Color.BLACK);
+        panel.setFocusable(true);
+
+        JButton backButton = new JButton("Back");
+        backButton.setBounds(125, 220, 150, 40);
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.remove(panel);
+                startMenu();
+            }
+        });
+
+        panel.add(backButton);
+
+        frame.getContentPane().removeAll();
+        frame.add(panel);
+        frame.revalidate();
+        frame.repaint();
         panel.requestFocusInWindow();
     }
 
     static void gameOverScreen(String message) {
         if (gameTimer != null) gameTimer.stop();
 
-        panel = new JPanel() {
+        panel = new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -179,43 +232,53 @@ public class SnakePyTranslation {
                 // Game Over text
                 g.setColor(Color.RED);
                 g.setFont(new Font("Arial", Font.BOLD, 24));
-                g.drawString("GAME OVER", 130, 150);
+                g.drawString("GAME OVER", 110, 120);
                 // Reason
                 g.setColor(Color.WHITE);
                 g.setFont(new Font("Arial", Font.PLAIN, 16));
-                g.drawString(message, 100, 200);
+                g.drawString(message, 85, 160);
                 // Score
                 g.setColor(Color.YELLOW);
                 g.setFont(new Font("Arial", Font.PLAIN, 16));
-                g.drawString("Final Score: " + score, 150, 310);
-                // Prompt
-                g.setColor(Color.WHITE);
-                g.setFont(new Font("Arial", Font.PLAIN, 14));
-                g.drawString("Press R to Restart or Q to Quit", 85, 250);
+                g.drawString("Final Score: " + score, 130, 190);
             }
         };
 
+        panel.setBackground(Color.BLACK);
         panel.setFocusable(true);
-        panel.addKeyListener(new KeyAdapter() {
+
+        JButton retryButton = new JButton("Play Again");
+        retryButton.setBounds(125, 230, 150, 40);
+        retryButton.addActionListener(new ActionListener() {
             @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_R) {
-                    frame.remove(panel);
-                    snakeBody.clear();
-                    score = 0;
-                    snakeMoveX = 0;
-                    snakeMoveY = 0;
-                    snakeDirection = "none";
-                    startGame();
-                } else if (e.getKeyCode() == KeyEvent.VK_Q) {
-                    System.exit(0);
-                }
+            public void actionPerformed(ActionEvent e) {
+                frame.getContentPane().removeAll();
+                snakeBody.clear();
+                score = 0;
+                snakeMoveX = 0;
+                snakeMoveY = 0;
+                snakeDirection = "none";
+                startGame();
             }
         });
 
+        JButton menuButton = new JButton("Main Menu");
+        menuButton.setBounds(125, 285, 150, 40);
+        menuButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.getContentPane().removeAll();
+                startMenu();
+            }
+        });
+
+        panel.add(retryButton);
+        panel.add(menuButton);
+
+        frame.getContentPane().removeAll();
         frame.add(panel);
         frame.revalidate();
-        panel.repaint();
+        frame.repaint();
         panel.requestFocusInWindow();
     }
 
@@ -315,6 +378,7 @@ public class SnakePyTranslation {
             }
         });
 
+        frame.getContentPane().removeAll();
         frame.add(panel);
         frame.revalidate();
         panel.requestFocusInWindow();
