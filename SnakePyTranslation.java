@@ -8,6 +8,7 @@ public class SnakePyTranslation {
     static final int SQUARE_SIZE = 25;
     static final int WIDTH = 400;
     static final int HEIGHT = 400;
+    static final int BOMB_RANGE = 75; // 3 blocks × 25 pixels
 
     static JFrame frame;
     static JPanel panel;
@@ -20,6 +21,8 @@ public class SnakePyTranslation {
     static int score = 0;
     static Timer gameTimer;
     static Random random = new Random();
+    static long bombSpawnTime;
+    static boolean bombsEnabled = true;
 
     public static void main(String[] args) {
         frame = new JFrame("Snakegame");
@@ -71,8 +74,18 @@ public class SnakePyTranslation {
             }
         });
 
+        JButton settingsButton = new JButton("Settings");
+        settingsButton.setBounds(125, 290, 150, 40);
+        settingsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.remove(panel);
+                showSettingsMenu();
+            }
+        });
+
         JButton quitButton = new JButton("Quit");
-        quitButton.setBounds(125, 290, 150, 40);
+        quitButton.setBounds(125, 345, 150, 40);
         quitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -82,6 +95,7 @@ public class SnakePyTranslation {
 
         panel.add(playButton);
         panel.add(skinButton);
+        panel.add(settingsButton);
         panel.add(quitButton);
 
         frame.getContentPane().removeAll();
@@ -121,6 +135,56 @@ public class SnakePyTranslation {
             }
         });
 
+        panel.add(backButton);
+
+        frame.getContentPane().removeAll();
+        frame.add(panel);
+        frame.revalidate();
+        frame.repaint();
+        panel.requestFocusInWindow();
+    }
+
+    static void showSettingsMenu() {
+        panel = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, WIDTH, HEIGHT);
+                g.setColor(Color.GREEN);
+                g.setFont(new Font("Arial", Font.BOLD, 24));
+                g.drawString("SETTINGS", 120, 80);
+                g.setColor(Color.WHITE);
+                g.setFont(new Font("Arial", Font.PLAIN, 14));
+                g.drawString("Bombs: " + (bombsEnabled ? "ON" : "OFF"), 130, 140);
+            }
+        };
+
+        panel.setBackground(Color.BLACK);
+        panel.setFocusable(true);
+
+        JButton toggleBombsButton = new JButton(bombsEnabled ? "Bombs OFF" : "Bombs ON");
+        toggleBombsButton.setBounds(125, 170, 150, 40);
+        toggleBombsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                bombsEnabled = !bombsEnabled;
+                frame.getContentPane().removeAll();
+                showSettingsMenu();
+            }
+        });
+
+        JButton backButton = new JButton("Back");
+        backButton.setBounds(125, 240, 150, 40);
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.getContentPane().removeAll();
+                startMenu();
+            }
+        });
+
+        panel.add(toggleBombsButton);
         panel.add(backButton);
 
         frame.getContentPane().removeAll();
@@ -200,6 +264,8 @@ public class SnakePyTranslation {
         ArrayList<Rectangle> bodyRects = new ArrayList<>();
         int[] headPos = {0, 0};
         int[] fruitPos = spawnFruit(bodyRects, headPos);
+        int[] bombPos = spawnBomb(bodyRects, headPos);
+        bombSpawnTime = System.currentTimeMillis();
         score = 0;
 
         panel = new JPanel() {
@@ -225,6 +291,11 @@ public class SnakePyTranslation {
                 // Fruit
                 g.setColor(Color.RED);
                 g.fillRect(fruitPos[0], fruitPos[1], SQUARE_SIZE, SQUARE_SIZE);
+                // Bomb
+                if (bombsEnabled) {
+                    g.setColor(Color.ORANGE);
+                    g.drawOval(bombPos[0], bombPos[1], SQUARE_SIZE, SQUARE_SIZE);
+                }
                 // Score
                 g.setColor(Color.YELLOW);
                 g.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -288,6 +359,25 @@ public class SnakePyTranslation {
                     if (!bodyRects.isEmpty()) bodyRects.remove(0);
                 }
 
+                // Bomb collision (3 block range)
+                if (bombsEnabled) {
+                    int dx = headPos[0] - bombPos[0];
+                    int dy = headPos[1] - bombPos[1];
+                    if (Math.sqrt(dx*dx + dy*dy) <= BOMB_RANGE) {
+                        frame.getContentPane().removeAll();
+                        gameOverScreen("Game Over: Hit Bomb");
+                        return;
+                    }
+                }
+
+                // Bomb explodes after 5 seconds
+                if (System.currentTimeMillis() - bombSpawnTime >= 5000) {
+                    int[] newBomb = spawnBomb(bodyRects, headPos);
+                    bombPos[0] = newBomb[0];
+                    bombPos[1] = newBomb[1];
+                    bombSpawnTime = System.currentTimeMillis();
+                }
+
                 panel.repaint();
             }
         });
@@ -312,5 +402,20 @@ public class SnakePyTranslation {
             if (!onSnake) break;
         }
         return new int[]{fx, fy};
+    }
+
+    static int[] spawnBomb(ArrayList<Rectangle> bodyRects, int[] headPos) {
+        int bx, by;
+        while (true) {
+            bx = random.nextInt(16) * SQUARE_SIZE;
+            by = random.nextInt(16) * SQUARE_SIZE;
+            boolean onSnake = false;
+            if (bx == headPos[0] && by == headPos[1]) onSnake = true;
+            for (Rectangle r : bodyRects) {
+                if (r.x == bx && r.y == by) onSnake = true;
+            }
+            if (!onSnake) break;
+        }
+        return new int[]{bx, by};
     }
 }
