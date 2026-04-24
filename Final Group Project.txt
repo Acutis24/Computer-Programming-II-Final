@@ -13,3 +13,15 @@ Different snake skins
 Buttons: Play and Pause
 Differing Speed: Starts slow then progresses faster as you go through; can choose a different starting speed
 Bombs
+
+Done:
+Singleplayer
+skins
+Bombs
+
+
+To-Do:
+Multiplayer
+speed change
+play and pause Buttons 
+Fix Bombs  - You do not die in the bomb range until it explodes, range is shorter
