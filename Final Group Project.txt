@@ -25,3 +25,4 @@ Multiplayer
 speed change
 play and pause Buttons 
 Fix Bombs  - You do not die in the bomb range until it explodes, range is shorter
+Fix Tail Bite
