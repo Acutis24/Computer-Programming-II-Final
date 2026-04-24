@@ -12,8 +12,11 @@ public class SnakePyTranslation {
 
     static JFrame frame;
     static JPanel panel;
+    static JButton skinsButton;
+    static JButton backButton;
     static ArrayList<Rectangle> snakeBody = new ArrayList<>();
     static Rectangle snakeHead;
+    static Color snakeColor = Color.GREEN;
     static Rectangle fruit;
     static int snakeMoveX = 0;
     static int snakeMoveY = 0;
@@ -70,7 +73,7 @@ public class SnakePyTranslation {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.remove(panel);
-                showSkinsMenu();
+                skinsMenu();
             }
         });
 
@@ -98,44 +101,104 @@ public class SnakePyTranslation {
         panel.add(settingsButton);
         panel.add(quitButton);
 
-        frame.getContentPane().removeAll();
+        frame.remove(frame);
         frame.add(panel);
         frame.revalidate();
         frame.repaint();
         panel.requestFocusInWindow();
     }
 
-    static void showSkinsMenu() {
-        panel = new JPanel(null) {
+    static void skinsMenu(){
+        panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.setColor(Color.BLACK);
                 g.fillRect(0, 0, WIDTH, HEIGHT);
-                g.setColor(Color.GREEN);
-                g.setFont(new Font("Arial", Font.BOLD, 24));
-                g.drawString("SKINS MENU", 110, 100);
                 g.setColor(Color.WHITE);
-                g.setFont(new Font("Arial", Font.PLAIN, 14));
-                g.drawString("Skin selection is a placeholder.", 95, 150);
-                g.drawString("Press Back to return to main menu.", 75, 180);
+                g.drawRect(100, 65, 190, 50);
+                g.fillRect(100, 65, 190, 50);
+                g.setColor(Color.BLACK);
+                g.setFont(new Font("Arial", Font.BOLD, 24));
+                g.drawString("SKINS MENU", 120, 100);
             }
         };
 
         panel.setBackground(Color.BLACK);
         panel.setFocusable(true);
+        panel.setLayout(null);
 
-        JButton backButton = new JButton("Back");
-        backButton.setBounds(125, 220, 150, 40);
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        backButton = new JButton("Back");
+        backButton.setBounds(160, 300, 80, 30);
+        panel.add(backButton);
+        backButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
                 frame.remove(panel);
                 startMenu();
             }
         });
 
-        panel.add(backButton);
+        JButton blueButton = new JButton("Blue");
+        blueButton.setBounds(70, 180, 80, 30);
+        panel.add(blueButton);
+        blueButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                snakeColor = Color.BLUE;
+                panel.setBackground(Color.BLUE);
+            }
+        });
+
+        JButton redButton = new JButton("Red");
+        redButton.setBounds(160, 180, 80, 30);
+        panel.add(redButton);
+        redButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                snakeColor = Color.RED;
+                panel.setBackground(Color.RED);
+            }
+        });
+
+        JButton greenButton = new JButton("Green");
+        greenButton.setBounds(250, 180, 80, 30);
+        panel.add(greenButton);
+        greenButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                snakeColor = Color.GREEN;
+                panel.setBackground(Color.GREEN);
+            }
+        });
+
+        JButton orangeButton = new JButton("Orange");
+        orangeButton.setBounds(115, 220, 80, 30);
+        panel.add(orangeButton);
+        orangeButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                snakeColor = Color.ORANGE;
+                panel.setBackground(Color.ORANGE);
+            }
+        });
+
+        JButton yellowButton = new JButton("Yellow");
+        yellowButton.setBounds(205, 220, 80, 30);
+        panel.add(yellowButton);
+        yellowButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                snakeColor = Color.YELLOW;
+                panel.setBackground(Color.YELLOW);
+            }
+        });     
 
         frame.getContentPane().removeAll();
         frame.add(panel);
@@ -281,12 +344,12 @@ public class SnakePyTranslation {
                     }
                 }
                 // Snake body
-                g.setColor(Color.GREEN);
+                g.setColor(snakeColor);
                 for (Rectangle r : bodyRects) {
                     g.fillRect(r.x, r.y, SQUARE_SIZE, SQUARE_SIZE);
                 }
                 // Snake head
-                g.setColor(Color.GREEN);
+                g.setColor(snakeColor);
                 g.fillRect(headPos[0], headPos[1], SQUARE_SIZE, SQUARE_SIZE);
                 // Fruit
                 g.setColor(Color.RED);
