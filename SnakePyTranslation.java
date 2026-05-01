@@ -23,10 +23,15 @@ public class SnakePyTranslation {
     static String snakeDirection = "none";
     static int score = 0;
     static Timer gameTimer;
+    static int gameDelay = 150;
+    static final int MIN_GAME_DELAY = 75;
+    static final int SPEED_INCREASE_INTERVAL = 10000;
+    static long lastSpeedIncreaseTime;
     static Random random = new Random();
     static long bombSpawnTime;
     static boolean bombsEnabled = true;
     static boolean bombVisible = true;
+    static boolean paused = false;
 
     public static void main(String[] args) {
         frame = new JFrame("Snakegame");
@@ -330,7 +335,10 @@ public class SnakePyTranslation {
         int[] fruitPos = spawnFruit(bodyRects, headPos);
         int[] bombPos = spawnBomb(bodyRects, headPos);
         bombSpawnTime = System.currentTimeMillis();
+        lastSpeedIncreaseTime = System.currentTimeMillis();
+        gameDelay = 150;
         bombVisible = true;
+        paused = false;
         score = 0;
 
         panel = new JPanel() {
@@ -365,6 +373,13 @@ public class SnakePyTranslation {
                 g.setColor(Color.YELLOW);
                 g.setFont(new Font("Arial", Font.PLAIN, 14));
                 g.drawString("Score: " + score, 160, 395);
+                if (paused) {
+                    g.setColor(Color.WHITE);
+                    g.setFont(new Font("Arial", Font.BOLD, 20));
+                    g.drawString("PAUSED", 165, 230);
+                    g.setFont(new Font("Arial", Font.PLAIN, 12));
+                    g.drawString("Press P to resume", 140, 250);
+                }
             }
         };
 
@@ -373,6 +388,20 @@ public class SnakePyTranslation {
         panel.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_P) {
+                    paused = !paused;
+                    if (paused) {
+                        gameTimer.stop();
+                    } else {
+                        lastSpeedIncreaseTime = System.currentTimeMillis();
+                        gameTimer.start();
+                    }
+                    panel.repaint();
+                    return;
+                }
+                if (paused) {
+                    return;
+                }
                 if (e.getKeyCode() == KeyEvent.VK_W && !snakeDirection.equals("down")) {
                     snakeMoveX = 0; snakeMoveY = -SQUARE_SIZE; snakeDirection = "up";
                 } else if (e.getKeyCode() == KeyEvent.VK_A && !snakeDirection.equals("right")) {
@@ -439,6 +468,12 @@ public class SnakePyTranslation {
                     bombPos[1] = newBomb[1];
                     bombVisible = true;
                     bombSpawnTime = System.currentTimeMillis();
+                }
+
+                if (System.currentTimeMillis() - lastSpeedIncreaseTime >= SPEED_INCREASE_INTERVAL) {
+                    gameDelay = Math.max(MIN_GAME_DELAY, gameDelay - 5);
+                    gameTimer.setDelay(gameDelay);
+                    lastSpeedIncreaseTime = System.currentTimeMillis();
                 }
 
                 panel.repaint();
