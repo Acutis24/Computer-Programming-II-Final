@@ -8,7 +8,7 @@ public class SnakePyTranslation {
     static final int SQUARE_SIZE = 25;
     static final int WIDTH = 400;
     static final int HEIGHT = 400;
-    static final int BOMB_RANGE = 75; // 3 blocks × 25 pixels
+    static final int BOMB_RANGE = 50; // 2 blocks × 25 pixels
 
     static JFrame frame;
     static JPanel panel;
@@ -26,6 +26,7 @@ public class SnakePyTranslation {
     static Random random = new Random();
     static long bombSpawnTime;
     static boolean bombsEnabled = true;
+    static boolean bombVisible = true;
 
     public static void main(String[] args) {
         frame = new JFrame("Snakegame");
@@ -329,6 +330,7 @@ public class SnakePyTranslation {
         int[] fruitPos = spawnFruit(bodyRects, headPos);
         int[] bombPos = spawnBomb(bodyRects, headPos);
         bombSpawnTime = System.currentTimeMillis();
+        bombVisible = true;
         score = 0;
 
         panel = new JPanel() {
@@ -355,7 +357,7 @@ public class SnakePyTranslation {
                 g.setColor(Color.RED);
                 g.fillRect(fruitPos[0], fruitPos[1], SQUARE_SIZE, SQUARE_SIZE);
                 // Bomb
-                if (bombsEnabled) {
+                if (bombsEnabled && bombVisible) {
                     g.setColor(Color.ORANGE);
                     g.drawOval(bombPos[0], bombPos[1], SQUARE_SIZE, SQUARE_SIZE);
                 }
@@ -422,8 +424,9 @@ public class SnakePyTranslation {
                     if (!bodyRects.isEmpty()) bodyRects.remove(0);
                 }
 
-                // Bomb collision (3 block range)
-                if (bombsEnabled) {
+                // Bomb explodes after 5 seconds
+                if (System.currentTimeMillis() - bombSpawnTime >= 5000) {
+                    bombVisible = false;
                     int dx = headPos[0] - bombPos[0];
                     int dy = headPos[1] - bombPos[1];
                     if (Math.sqrt(dx*dx + dy*dy) <= BOMB_RANGE) {
@@ -431,13 +434,10 @@ public class SnakePyTranslation {
                         gameOverScreen("Game Over: Hit Bomb");
                         return;
                     }
-                }
-
-                // Bomb explodes after 5 seconds
-                if (System.currentTimeMillis() - bombSpawnTime >= 5000) {
                     int[] newBomb = spawnBomb(bodyRects, headPos);
                     bombPos[0] = newBomb[0];
                     bombPos[1] = newBomb[1];
+                    bombVisible = true;
                     bombSpawnTime = System.currentTimeMillis();
                 }
 
